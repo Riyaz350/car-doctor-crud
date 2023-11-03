@@ -1,10 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
+import axios from 'axios';
 
 const Login = () => {
-
+    const location = useLocation()
+    const navigate = useNavigate()
+    console.log(location.state)
     const { signIn } = useContext(AuthContext);
 
     const handleLogin = event => {
@@ -15,8 +18,17 @@ const Login = () => {
         console.log(name, email, password)
         signIn(email, password)
             .then(result => {
-                const user = result.user;
-                console.log(user);
+                const loggedInUser = result.user;
+                console.log(loggedInUser);
+                const user = {email}
+                // navigate(location?.state? location.state : "/")
+
+                // jwt
+                axios.post('https://car-doctor-server-au54u4yxk-riyaz-ahmeds-projects.vercel.app/jwt', user, {withCredentials: true})
+                .then(res=>{
+                    console.log(res.data)
+                })
+
             })
             .catch(error => console.log(error));
     }
